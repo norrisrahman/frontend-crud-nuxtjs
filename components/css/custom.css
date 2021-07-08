@@ -1,0 +1,11 @@
+#content-wrapper {
+    max-width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px 0 0 0 ;
+}
+.content-title{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
