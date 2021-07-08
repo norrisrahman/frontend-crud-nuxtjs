@@ -1,25 +1,25 @@
 <template>
   <div>
-    <b-table striped hover :items="tabel"></b-table>
+    <b-table striped hover :items="users" :fields="fields" show-empty></b-table>
   </div>
 </template>
 
 <script>
-
+import axios from 'axios'
 
   export default {
-    modules: ['@nuxtjs/axios'],
     data() {
       return {
-        tabel: []
+        fields: ['nama', 'NIM', 'jurusan'],
+        users: []
       }
     },
     methods : {
       async getMahasiswa() {
-        const URL = "http://localhost:8080/api/mahasiswa/";
-        await this.$axios.$get(URL)
-          .then(res => {
-            console.log(res.data)
+        axios.get('http://localhost:8080/api/mahasiswa')
+          .then(response => {
+            this.users = response.data,
+            console.log(response.data)
           })
       }
     },
