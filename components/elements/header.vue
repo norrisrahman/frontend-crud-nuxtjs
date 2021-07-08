@@ -7,7 +7,7 @@
 
         <b-collapse id="nav-text-collapse" is-nav>
         <b-navbar-nav>
-            <b-nav-text>Navbar text</b-nav-text>
+            <b-nav-item href="/inputData">Tambah Data</b-nav-item>
         </b-navbar-nav>
         </b-collapse>
         </b-navbar>
