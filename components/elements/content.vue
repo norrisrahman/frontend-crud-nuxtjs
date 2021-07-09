@@ -1,30 +1,129 @@
 <template>
   <div>
-    <b-table striped hover :items="users" :fields="fields" show-empty></b-table>
+    <div class="addData-btn">
+      <b-button variant="primary" v-b-modal.modal-prevent-closing>Tambah Data</b-button>
+    </div>
+    <b-modal id="modal-prevent-closing" ref="modal" title="Masukkan Data Baru" @show="resetModal" @hidden="resetModal" @ok="handleOk">
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group id="input-group-2" label="Nama :" label-for="input-1" invalid-feedback="Name is required" :state="nameState">
+                <b-form-input
+                id="input-1"
+                v-model="form.nama"
+                placeholder="Masukkan Nama"
+                required
+                ></b-form-input>
+            </b-form-group>
+
+            <b-form-group id="input-group-2" label="NIM :" label-for="input-2" invalid-feedback="Name is required" :state="nameState">
+                <b-form-input
+                id="input-2"
+                v-model="form.NIM"
+                placeholder="Masukkan NIM"
+                required
+                ></b-form-input>
+            </b-form-group>
+
+            <b-form-group id="input-group-2" label="Jurusan :" label-for="input-3" invalid-feedback="Name is required" :state="nameState">
+                <b-form-input
+                id="input-3"
+                v-model="form.jurusan"
+                placeholder="Masukkan Jurusan"
+                required
+                ></b-form-input>
+            </b-form-group>
+
+      </form>
+    </b-modal>
+    <b-table striped hover :items="users" :fields="fields" show-empty>
+        <template v-slot:cell(actions)="row" >
+        <b-button  variant="primary"><font-awesome-icon :icon="['fas', 'pencil-alt']"/></b-button>
+        <b-button  variant="danger" @click="deletePost(row)"><font-awesome-icon :icon="['fas', 'times']"/></b-button>
+      </template>
+    </b-table>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import addData from '../../pages/inputData.vue'
 
   export default {
     data() {
       return {
-        fields: ['nama', 'NIM', 'jurusan'],
-        users: []
+        fields: ['nama', 'NIM', 'jurusan','actions'],
+        users: [],
+        modalShow: false,
+        form: {
+          nama: '',
+          NIM: '',
+          jurusan: '',
+        },
+        validation: [],
+        show:true,
+        nameState: null,
       }
     },
     methods : {
       async getMahasiswa() {
         axios.get('http://localhost:8080/api/mahasiswa')
           .then(response => {
-            this.users = response.data,
-            console.log(response.data)
+            this.users = response.data
           })
-      }
+      },
+      async deletePost(row) {
+        console.log(row.item._id)
+        await this.$axios.delete(`http://localhost:8080/api/mahasiswa/${row.item._id}`)
+          .then(() => {
+            this.users.splice(row.index, 1);
+          })
+      },
+      checkFormValidity() {
+        const valid = this.$refs.form.checkValidity()
+        this.nameState = valid
+        return valid
+      },
+      resetModal() {
+        this.name = ''
+        this.nameState = null
+      },
+      handleOk(bvModalEvt) {
+        // Prevent modal from closing
+        bvModalEvt.preventDefault()
+        // Trigger submit handler
+        this.handleSubmit()
+      },
+      async handleSubmit() {
+        
+        if (!this.checkFormValidity()) {
+          return
+        }
+
+        await this.$axios.$post('http://localhost:8080/api/mahasiswa', {
+            nama: this.form.nama,
+            NIM: this.form.NIM,
+            jurusan: this.form.jurusan
+        })
+        .then(()=> {
+            this.$router.push({
+                nama: 'nama'
+            })
+        })
+        .catch(error => {
+            this.validation = console.response.data;
+        })
+        this.show = false
+        this.$nextTick(() => {
+          this.$bvModal.hide('modal-prevent-closing')
+        })
+        this.getMahasiswa();
+      },
     },
     mounted() {
       this.getMahasiswa();
+      this.deletePost();
+    },
+    components :{
+      'input-app': addData
     }
   }
 </script>
