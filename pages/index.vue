@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <header-app></header-app>
     <div id="content-wrapper">
       <div class="content-title"> <h1>Data Mahasiswa 2021</h1></div>
       <content-app></content-app>

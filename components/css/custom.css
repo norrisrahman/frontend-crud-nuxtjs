@@ -13,3 +13,8 @@
     margin-bottom: 10px;
     float: right;
 }
+.search-form {
+    max-width: 230px;
+    float: left;
+    
+}
